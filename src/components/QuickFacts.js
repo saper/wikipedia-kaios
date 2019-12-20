@@ -1,35 +1,35 @@
-import { h, Fragment } from 'preact'
-import { useRef, useEffect } from 'preact/hooks'
-import { useArticle, useNavigation, useScroll, useI18n, useSoftkey } from 'hooks'
+import { h } from 'preact'
+import { useRef } from 'preact/hooks'
+import { useArticle, useScroll, useI18n, useSoftkey, useArticleLinksNavigation } from 'hooks'
+import { viewport } from 'utils'
 
 export const QuickFacts = ({ lang, title }) => {
   const i18n = useI18n()
   const article = useArticle(lang, title)
   const containerRef = useRef()
-  const [, setNavigation] = useNavigation('QuickFacts', containerRef, 'x', 'a[href]:not(.image)')
-  const [scrollDown, scrollUp] = useScroll(containerRef, 10, 'y')
+  const [nextPage, previousPage] = useScroll(containerRef, viewport.width, 'x')
   useSoftkey('QuickFacts', {
     left: i18n.i18n('softkey-close'),
     onKeyLeft: () => history.back(),
-    onKeyArrowDown: scrollDown,
-    onKeyArrowUp: scrollUp
+    onKeyArrowUp: previousPage,
+    onKeyArrowDown: nextPage
   })
 
   if (!article) {
     return 'Loading...'
   }
 
-  useEffect(() => {
-    setNavigation(0)
-  }, [article])
+  useArticleLinksNavigation('QuickFacts', containerRef,
+    containerRef.current ? containerRef.current.scrollLeft : -1,
+    () => {}, () => {}
+  )
 
   return (
-    <Fragment>
+    <div class='quickfacts-container' ref={containerRef}>
       <div
         class='quickfacts'
-        ref={containerRef}
         dangerouslySetInnerHTML={{ __html: article.infobox }}
       />
-    </Fragment>
+    </div>
   )
 }

@@ -37,7 +37,7 @@ const ArticleSection = ({
     }
   }
   const [selectedLink] = useArticleLinksNavigation(
-    contentRef, page, onTitleClick, onActionClick)
+    'Article', contentRef, page, onTitleClick, onActionClick)
 
   useSoftkey('Article', {
     center: selectedLink ? i18n.i18n('centerkey-select') : ''

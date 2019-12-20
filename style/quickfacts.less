@@ -1,23 +1,35 @@
-.quickfacts {
-	overflow-x: hidden;
-	overflow-y: scroll;
+.quickfacts-container {
+	// This needs to be set on
+	// the parent of the element with columns.
+	overflow-y: hidden;
+	overflow-x: scroll;
+	overflow: -moz-scrollbars-none;
 
-	[nav-selected=true] {
-		background-color: #eaf3ff;
-		border: solid grey 1px;
-		border-radius: 2px;
-		padding: 2px;
-	}
+	.quickfacts {
+		width: 100vw;
+		height: calc(100vh - @softkeysHeight);
+		-moz-column-width: 100vw;
+		-moz-column-gap: 0;
+		-moz-column-fill: auto;
 
-	table {
-		max-width: 100% !important;
-	}
+		[data-selected=true] {
+			background-color: #eaf3ff;
+			border: solid grey 1px;
+			border-radius: 2px;
+			padding: 2px;
+		}
 
-	img {
-		max-width: 200px !important;
-	}
+		table {
+			width: 100vw;
+		}
 
-	span.plainlinks {
-		display: none;
+		img {
+			max-width: 100px;
+			height: auto;
+		}
+
+		span.plainlinks {
+			display: none;
+		}
 	}
 }

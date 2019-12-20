@@ -5,6 +5,7 @@ import { viewport } from 'utils'
 const SELECTED_ATTRIBUTE = 'data-selected'
 
 export const useArticleLinksNavigation = (
+  origin,
   contentRef,
   currentPage,
   onTitleClick,
@@ -51,7 +52,7 @@ export const useArticleLinksNavigation = (
     }
   }, [currentPage])
 
-  useSoftkey('Article', {
+  useSoftkey(origin, {
     onKeyArrowLeft: () => {
       if (!hasLinks()) {
         return
