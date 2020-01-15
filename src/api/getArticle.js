@@ -1,6 +1,6 @@
 import { cachedFetch, buildPcsUrl } from 'utils'
 
-export const getArticle = (lang, title) => {
+export const getMobileSections = (lang, title) => {
   const url = buildPcsUrl(lang, title, 'mobile-sections')
   return cachedFetch(url, data => {
     const parser = new DOMParser()
@@ -85,7 +85,7 @@ export const getArticle = (lang, title) => {
 const fixImageUrl = (htmlString) => {
   // The app is served from the app:// protocol so protocol-relative
   // image sources don't work.
-  return htmlString.replace(/src="\/\//gi, 'src="https://')
+  return htmlString.replace(/"\/\//gi, '"https://')
 }
 
 const convertPlainText = string => {
@@ -138,4 +138,30 @@ const extractInfobox = doc => {
 
     return infoboxNode.outerHTML
   }
+}
+
+const getMobileHtml = (lang, title) => {
+  const url = `https://${lang}.wikipedia.org/api/rest_v1/page/mobile-html/${encodeURIComponent(title)}`
+  return fetch(url)
+    .then(response => response.text())
+    .then(text => {
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(text, 'text/html')
+      const infobox = doc.querySelector('table.infobox')
+      if (infobox) {
+        infobox.style = ''
+        infobox.classList.remove('pcs-collapse-table')
+        return fixImageUrl(infobox.outerHTML)
+      }
+    })
+}
+
+export const getArticle = (lang, title) => {
+  return Promise.all([
+    getMobileSections(lang, title),
+    getMobileHtml(lang, title)
+  ]).then(([article, infobox]) => {
+    article.infobox = infobox
+    return article
+  })
 }
